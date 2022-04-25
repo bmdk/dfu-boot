@@ -88,14 +88,15 @@ int main(void)
   uint32_t JumpAddress;
 
   MX_GPIO_Init();
-  if(HAL_GPIO_ReadPin(0, 0) == GPIO_PIN_SET)
+
+  if(HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_SET)
   {
     /* Test if user code is programmed starting from address 0x08010000 */
     if (((*(__IO uint32_t *) USBD_DFU_APP_DEFAULT_ADD) & 0x2FFC0000) == 0x20000000)
     {
+      __disable_irq();
       JumpAddress = *(__IO uint32_t *) (USBD_DFU_APP_DEFAULT_ADD + 4);
       JumpToApplication = (pFunction) JumpAddress;
-
       JumpToApplication();
     }
   }
